@@ -27,6 +27,7 @@ switch (option) {
         break;
 
     case 'do-what-it-says':
+        // TODO: Implement file reading functionality
         break;
 
     default:
@@ -34,7 +35,7 @@ switch (option) {
         break;
 }
 
-//functions to handle requests
+// Functions to handle Spotify requests
 function spotifyThis(params){
     params = (params === "") ? 'The sign' : params;
     
@@ -44,7 +45,7 @@ function spotifyThis(params){
         if (err) {
           return console.log('Error occurred: ' + err);
         }
-        data.tracks.items.forEach((element, index) => {
+        data.tracks.items.forEach((element) => {
             console.log(`------------------------------------`);
             console.log(`Artist: ${element.artists[0].name}`);
             console.log(`Song name: ${element.name}`);
@@ -54,6 +55,7 @@ function spotifyThis(params){
       });
 }
 
+// Function to handle API Requests
 function requestApi(option, params){
     switch (option){
         case 'movie':
@@ -87,6 +89,7 @@ function requestApi(option, params){
     }
 }
 
+// Function to handle errors in API Requests
 function handleError(error){
     if (error.response) {
         // The request was made and the server responded with a status code
