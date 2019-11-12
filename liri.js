@@ -2,6 +2,7 @@ require("dotenv").config();
 var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
 var axios = require('Axios');
+var moment = require('moment');
 
 var spotify = new Spotify(keys.spotify);
 var option = process.argv[2];
@@ -66,27 +67,43 @@ function requestApi(option, params){
                 console.log(`Language: ${response.data.Plot}`);
                 console.log(`Language: ${response.data.Actors}`);
             }).catch(error => {
-                if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                    console.log("---------------Data---------------");
-                    console.log(error.response.data);
-                    console.log("---------------Status---------------");
-                    console.log(error.response.status);
-                    console.log("---------------Status---------------");
-                    console.log(error.response.headers);
-                  } else if (error.request) {
-                    // The request was made but no response was received
-                    // `error.request` is an object that comes back with details pertaining to the error that occurred.
-                    console.log(error.request);
-                  } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.log("Error", error.message);
-                  }
-                  console.log(error.config);
+                handleError(error);
             });
             break;
         case 'concert':
+            var params = (params === '') ? 'Celine Dion' : params;
+            axios.get(concertUrlStart + params + concertUrlEnd).then(response => {
+                // console.log(response.data)
+                response.data.forEach(element => {
+                    console.log(`Venue name: ${element.venue.name}`);
+                    console.log(`Location: ${element.venue.city}, ${element.venue.country}`);
+                    var date = moment(element.datetime).format('MM/DD/YYYY');
+                    console.log(`Date: ${date}`);
+                });
+            }).catch(error => {
+                handleError(error);
+            })
             break;
     }
+}
+
+function handleError(error){
+    if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log("---------------Data---------------");
+        console.log(error.response.data);
+        console.log("---------------Status---------------");
+        console.log(error.response.status);
+        console.log("---------------Status---------------");
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an object that comes back with details pertaining to the error that occurred.
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
+      console.log(error.config);
 }
